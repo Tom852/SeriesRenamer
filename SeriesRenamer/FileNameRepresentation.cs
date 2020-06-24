@@ -6,7 +6,7 @@ using System.Web;
 
 namespace SeriesRenamer
 {
-    class FileNameRepresentation
+    public class FileNameRepresentation
     {
 
         public FileNameRepresentation(string seriesName, int season, int episode, string episodeName)

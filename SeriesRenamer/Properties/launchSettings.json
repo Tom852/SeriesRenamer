@@ -2,7 +2,7 @@
   "profiles": {
     "SeriesRenamer": {
       "commandName": "Project",
-      "commandLineArgs": "-n \"Star Trek - TNG\" -f \"F:\\New Files\\_series\\Star Trek xD\\TNG\\Neuer Ordner\" -u \"https://de.wikipedia.org/wiki/Raumschiff_Enterprise_%E2%80%93_Das_n%C3%A4chste_Jahrhundert/Episodenliste\""
+      "commandLineArgs": "-n \"Star Trek - TNG\" -f \"F:\\New Files\\_series\\Star Trek xD\\TNG\" -u \"https://de.wikipedia.org/wiki/Raumschiff_Enterprise_%E2%80%93_Das_n%C3%A4chste_Jahrhundert/Episodenliste\""
     }
   }
 }
