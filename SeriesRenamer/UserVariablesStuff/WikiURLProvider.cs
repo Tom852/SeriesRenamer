@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using HtmlAgilityPack;
 
 namespace SeriesRenamer.UserVariablesStuff
 {
@@ -125,16 +126,14 @@ namespace SeriesRenamer.UserVariablesStuff
             {
                 using (WebClient client = new WebClient())
                 {
-                    dl1 = client.DownloadString(new Uri(url));
+                    dl1 = client.DownloadString(url);
                 }
             }
             catch
             {
                 return false;
             }
-
-            //Todo wenn es wieder kompiliert testen ob das funzt mit dem plaintext oder ob das html mässig is.
-            return dl1.Contains("Episoden") && dl1.Contains("→ Hauptartikel: Rick and Morty/Episodenliste");   //TODO: and not contain: hauptartikel: Die Simpopns/Episodenliste
+            return dl1.Contains("Episoden");
         }
 
 

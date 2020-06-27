@@ -21,6 +21,8 @@ namespace SeriesRenamer.Renaming
 
         public Dictionary<string, string> Match()
         {
+            Console.WriteLine("\n\n**INFO**: Matching Files on System");
+            Console.WriteLine("==================================");
 
             Dictionary<string, string> result = new Dictionary<string, string>();
             try

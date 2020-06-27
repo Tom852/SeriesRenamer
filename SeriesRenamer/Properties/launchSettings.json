@@ -1,8 +1,7 @@
 {
   "profiles": {
     "SeriesRenamer": {
-      "commandName": "Project",
-      "commandLineArgs": "-n \"Rick and Morty\" -f \"F:\\New Files\\\""
+      "commandName": "Project"
     }
   }
 }
