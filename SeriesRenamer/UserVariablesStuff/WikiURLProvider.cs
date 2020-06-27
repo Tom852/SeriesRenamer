@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
 
-namespace SeriesRenamer
+namespace SeriesRenamer.UserVariablesStuff
 {
     public class WikiURLProvider
     {
