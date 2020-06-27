@@ -8,7 +8,7 @@ Der SeriesRenamer ist eine Konsolenapplikation, die deine Serien einheitlich ben
 Insbesondere wird der Episodentitel von jeder Episode ermittelt und dem Dateinamen hinzugefügt.
 
 ## Download
-[Series Renamer V1](https://github.com/Tom852/SeriesSelector/releases/tag/v1)
+[Series Renamer V1](https://github.com/Tom852/SeriesRenamer/releases/download/v1/publish.rar)
 
 ## Launch Args
 * -f Pfad auf dem Dateisystem
