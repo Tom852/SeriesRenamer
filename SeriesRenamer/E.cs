@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SeriesRenamer
 {
-    public static class Env
+    public static class E
     {
         public static string lang = "deutsch";
         public static string folder = string.Empty;
