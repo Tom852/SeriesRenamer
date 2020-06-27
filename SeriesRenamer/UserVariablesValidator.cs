@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SeriesRenamer
 {
-    public class EnvValidator
+    public class EValidator
     {
 
         public void Validate()
@@ -20,49 +20,49 @@ namespace SeriesRenamer
 
         private static void ObtainLang()
         {
-            if (Env.lang.ToLower().Substring(0, 2) == "de") Env.lang = "deutsch";
-            else if (Env.lang.ToLower().Substring(0, 2) == "or") Env.lang = "original";
-            else if (Env.lang.ToLower().Substring(0, 2) == "en") Env.lang = "original";
-            else Env.lang = "deutsch";
+            if (UserVariables.lang.ToLower().Substring(0, 2) == "de") UserVariables.lang = "deutsch";
+            else if (UserVariables.lang.ToLower().Substring(0, 2) == "or") UserVariables.lang = "original";
+            else if (UserVariables.lang.ToLower().Substring(0, 2) == "en") UserVariables.lang = "original";
+            else UserVariables.lang = "deutsch";
         }
 
         private static void ObtainURL()
         {
-            if (Env.wikiURL != string.Empty && !CheckUrl(Env.wikiURL))
+            if (UserVariables.wikiURL != string.Empty && !CheckUrl(UserVariables.wikiURL))
             {
                 Console.WriteLine("**WARNING**: Given URL seems not right. Ignoring argument...");
-                Env.wikiURL = string.Empty;
+                UserVariables.wikiURL = string.Empty;
             }
 
-            if (Env.wikiURL == string.Empty)
+            if (UserVariables.wikiURL == string.Empty)
             {
-                Env.wikiURL = CreateWikiURL(Env.seriesName);
+                UserVariables.wikiURL = CreateWikiURL(UserVariables.seriesName);
             }
         }
 
         private static void ObtainSeriesName()
         {
-            if (Env.seriesName == string.Empty)
+            if (UserVariables.seriesName == string.Empty)
             {
-                Env.seriesName = Env.folder.Split("\\").Last();
+                UserVariables.seriesName = UserVariables.folder.Split("\\").Last();
                 Console.WriteLine("Enter the Name of your series.");
                 Console.WriteLine(@"Example: Rick and Morty");
-                Console.WriteLine($"--> Leave Empty to go with '{Env.seriesName}'");
+                Console.WriteLine($"--> Leave Empty to go with '{UserVariables.seriesName}'");
                 string seriesNameUser = Console.ReadLine();
                 if (seriesNameUser != string.Empty)
                 {
-                    Env.seriesName = seriesNameUser;
+                    UserVariables.seriesName = seriesNameUser;
                 }
             }
         }
 
         private static void ObtainFolder()
         {
-            while (!Directory.Exists(Env.folder))
+            while (!Directory.Exists(UserVariables.folder))
             {
                 Console.WriteLine("Enter Folder with the Files from your series.");
                 Console.WriteLine(@"Example: F:\New Files\_series\Rick and Morty");
-                Env.folder = Console.ReadLine();
+                UserVariables.folder = Console.ReadLine();
             }
         }
 

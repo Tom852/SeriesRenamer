@@ -22,12 +22,13 @@ namespace SeriesRenamer
 * -n series name
 * -u wiki url
 * -l lang   [de / original]");
+                return;
             }
 
 
             if (Args.Length % 2 == 1)
             {
-                throw new ArgumentException("Invalid argument length provided.");
+                throw new ArgumentException("Invalid argument amount.");
             }
 
             for (int i = 0; i < Args.Length; i += 2)
@@ -35,30 +36,30 @@ namespace SeriesRenamer
                 switch (Args[i])
                 {
                     case "-f":
-                        Env.folder = Args[i + 1];
+                        E.folder = Args[i + 1];
                         break;
 
                     case "-n":
-                        Env.seriesName = Args[i + 1];
+                        E.seriesName = Args[i + 1];
                         break;
 
                     case "-u":
                     case "-w":
-                        Env.wikiURL = Args[i + 1];
+                        E.wikiURL = Args[i + 1];
                         break;
 
                     case "-l":
-                        Env.lang = Args[i + 1];
+                        E.lang = Args[i + 1];
                         break;
                     default:
                         throw new ArgumentException("Invalid argument identifier provided: " + Args[i]);
                 }
             }
 
-            if (!Directory.Exists(Env.folder))
+            if (!Directory.Exists(E.folder))
             {
                 Console.WriteLine("**WARNING**: Provided Directory not existing. Ignoring...");
-                Env.folder = string.Empty;
+                E.folder = string.Empty;
             }
 
         }
