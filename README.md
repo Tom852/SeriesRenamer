@@ -1,5 +1,5 @@
 # SeriesRenamer
-Benennt die Videofiles einer Serie einheitlich und fügt den Episodennamen hinzu.
+Consistently renames video files of a series and adds the episode title.
  
  ![Screenshot](/DemoPics/01.png "Screenshot")
  
