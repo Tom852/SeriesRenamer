@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace SeriesRenamer
+namespace SeriesRenamer.FolderAnalysis
 {
     public class BadKeywordFilter
     {
@@ -27,7 +27,7 @@ namespace SeriesRenamer
             return result;
         }
 
-        public string FilterIt(string word)
+        public string Filter(string word)
         {
             string result = word;
             foreach (var badThing in WordList)

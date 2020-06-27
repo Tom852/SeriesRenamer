@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using SeriesRenamer.Renaming;
 using SeriesRenamer.UserVariablesStuff;
+using SeriesRenamer.WikiAnalysis;
 
 namespace SeriesRenamer
 {
@@ -16,7 +18,6 @@ namespace SeriesRenamer
             validatedVars.Print();
 
             var fileNamePool = new WikiAnalyzer(validatedVars).Analyze();
-            var filesOnSystem = Directory.GetFiles(UserVariables.folder);
 
             Dictionary<string, string> renaming = new FileMatcher(fileNamePool, filesOnSystem).Match();
             new Renamer(renaming).Rename();

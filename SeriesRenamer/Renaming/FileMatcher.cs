@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+using SeriesRenamer.WikiAnalysis;
 
-namespace SeriesRenamer
+namespace SeriesRenamer.Renaming
 {
     public class FileMatcher
     {
@@ -23,27 +22,12 @@ namespace SeriesRenamer
         {
 
             Dictionary<string, string> result = new Dictionary<string, string>();
-            var f = new BadKeywordFilter();
             try
             {
                 foreach (string filesystemFile in FilesOnSystem)
                 {
-                    string cleanedFilePath = f.FilterIt(filesystemFile);
-
-                    string cleanedFilename = cleanedFilePath.Split('\\').ToList().Last();
 
                     bool filesystemFileSuccessfullyMatched = false;
-                    Regex r = new Regex(@"(\d?\d).*?(\d{2})");  //TODO make this more robust like blabla3blabla-112
-                    Match m = r.Match(cleanedFilename);
-
-                    if (!m.Success)
-                    {
-                        Console.WriteLine($"WARN: File {Path.GetFileName(filesystemFile)} does not contain a season and episode index of the form ...02..12... / File is ignored");
-                    }
-
-                    int.TryParse(m.Groups[1].Value, out int fileSeason);
-                    int.TryParse(m.Groups[2].Value, out int fileEpisode);
-
                     //Console.WriteLine($"DEBUG: Filename Analysis result:\nFile: {filesystemFile}\nCropped: {cleanedFilename}\nSeason: {fileSeason} - Ep: {fileEpisode}\n");
                     string extension = Path.GetExtension(filesystemFile);
                     foreach (FileNameRepresentation deducedNewName in FileNamePool)

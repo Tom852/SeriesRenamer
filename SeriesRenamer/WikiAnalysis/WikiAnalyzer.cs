@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Resources;
-using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 using SeriesRenamer.UserVariablesStuff;
 
-namespace SeriesRenamer
+namespace SeriesRenamer.WikiAnalysis
 {
     public class WikiAnalyzer
     {
