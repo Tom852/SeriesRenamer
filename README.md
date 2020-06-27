@@ -16,13 +16,14 @@ Insbesondere wird der Episodentitel von jeder Episode ermittelt und dem Dateinam
 * -u Wiki URL der Episodenliste
 * -l Gewünschte Sprache, deutsch oder original
 
+Example: `-f "F:\New Files\The Blacklist" -n "The Blacklist" -u "https://de.wikipedia.org/wiki/The_Blacklist/Episodenliste" -l "de"`
+
 ## badWords.txt
 Viele Downloads enthalten Terme wie *720p*. Damit dies nicht als Season 7, Episode 20 erkannt wird, können solche Terme im File *badWords.txt* angegeben werden.
-
 
 ## Bugs, Features
 Bugs und Feature Requests dürft ihr mir gerne mitteilen ;)
 
 
-## Englisch version?
-This software was made for German application only. It relies on German Wikis with German identifiers and such, is thus not applicable for other languages. However, it can apply English titles, e.g. if a series does not contain German titles, such as *The Blacklist*.
+## English Version?
+This software was made for German use only. It relies on German Wikis with German identifiers and such, is thus not applicable for other languages. However, it can apply English titles, e.g. if a series does not contain German titles.
