@@ -25,12 +25,12 @@ namespace SeriesRenamer
 
             HtmlWeb web = new HtmlWeb();
             HtmlDocument wikiDocument;
-            wikiDocument = web.Load(new Uri(Env.wikiURL));
+            wikiDocument = web.Load(new Uri(UserVariables.wikiURL));
             wikiDocument.OptionUseIdAttribute = true;
 
 
             var h2Nodes = wikiDocument.DocumentNode.SelectNodes("//h2");
-            LinkedList<FileNameRepresentation> result = AnalyzeByHeadings(h2Nodes, Env.seriesName);
+            LinkedList<FileNameRepresentation> result = AnalyzeByHeadings(h2Nodes, UserVariables.seriesName);
 
             if (!result.IsEmpty())
             {
@@ -50,7 +50,7 @@ namespace SeriesRenamer
                 var h3Nodes = h2Head.SelectNodes("./following-sibling::h3");
                 if (!(h3Nodes is null))
                 {
-                    result = AnalyzeByHeadings(h3Nodes, Env.seriesName);
+                    result = AnalyzeByHeadings(h3Nodes, UserVariables.seriesName);
                 }
                 else
                 {
@@ -243,7 +243,7 @@ namespace SeriesRenamer
             }
 
 
-            FileNameRepresentation result = new FileNameRepresentation(Env.seriesName, season, episode, episodeName);
+            FileNameRepresentation result = new FileNameRepresentation(UserVariables.seriesName, season, episode, episodeName);
             Console.WriteLine("SUCCESS: Added episode: " + result.FullName);
             return result;
         }
@@ -263,7 +263,7 @@ namespace SeriesRenamer
                 string cellText = col.InnerText.Trim();
                 Console.WriteLine($"DEBUG: Currently Checking: '{cellText}'");
 
-                if (cellText.ToLower().Contains(Env.lang) && cellText.ToLower().Contains("titel"))
+                if (cellText.ToLower().Contains(UserVariables.lang) && cellText.ToLower().Contains("titel"))
                 {
                     Console.WriteLine("SUCCESS: Found column index for the Name: " + index);
                     indexOfNameColumn = index;

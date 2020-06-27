@@ -5,17 +5,17 @@ using System.Text;
 
 namespace SeriesRenamer
 {
-    class Engine
+    class Pipeline
     {
 
         public void Run(string[] args)
         {
-            new ArgumentsParser(args).ParseArguments();
-            new EnvValidator().Validate();
-            Env.Print();
+            UserVariables userVars = new ArgumentsParser(args).ParseArguments();
+            UserVariables validatedVars = new UserVariablesValidator(userVars).Validate();
+            validatedVars.Print();
 
             var fileNamePool = new WikiAnalyzer().Analyze();
-            var filesOnSystem = Directory.GetFiles(Env.folder);
+            var filesOnSystem = Directory.GetFiles(UserVariables.folder);
 
             Dictionary<string, string> renaming = new FileMatcher(fileNamePool, filesOnSystem).Match();
             new Renamer(renaming).Rename();

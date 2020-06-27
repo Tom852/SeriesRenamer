@@ -14,7 +14,7 @@ namespace SeriesRenamer
         static void Main(string[] args)
         {
 
-            new Engine().Run(args);
+            new Pipeline().Run(args);
         }
     }
 

@@ -5,7 +5,7 @@ using System.Text;
 namespace SeriesRenamer
 {
 
-    public static class Extension
+    public static class Extensions
     {
         public static bool IsEmpty<T>(this ICollection<T> coll)
         {

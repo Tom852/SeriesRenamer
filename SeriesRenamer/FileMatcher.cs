@@ -50,7 +50,7 @@ namespace SeriesRenamer
                     {
                         if (deducedNewName.Season == fileSeason && deducedNewName.Episode == fileEpisode)
                         {
-                            string targetName = Path.Combine(Env.folder, deducedNewName.FullName + extension);
+                            string targetName = Path.Combine(UserVariables.folder, deducedNewName.FullName + extension);
                             if (result.Values.Contains(targetName))
                             {
                                 Console.WriteLine("**ERROR**: Duplicate target file name: " + Path.GetFileName(filesystemFile) + " --> " + targetName);
