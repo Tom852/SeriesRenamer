@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using SeriesRenamer.FolderAnalysis;
 using SeriesRenamer.WikiAnalysis;
 
 namespace SeriesRenamer.Renaming
@@ -9,9 +10,9 @@ namespace SeriesRenamer.Renaming
     public class FileMatcher
     {
         public LinkedList<FileNameRepresentation> FileNamePool { get; }
-        public string[] FilesOnSystem { get; }
+        public LinkedList<RawFileSystemFile> FilesOnSystem { get; }
 
-        public FileMatcher(LinkedList<FileNameRepresentation> pool, string[] fos)
+        public FileMatcher(LinkedList<FileNameRepresentation> pool, LinkedList<RawFileSystemFile> fos)
         {
             FileNamePool = pool;
             FilesOnSystem = fos;
@@ -24,24 +25,23 @@ namespace SeriesRenamer.Renaming
             Dictionary<string, string> result = new Dictionary<string, string>();
             try
             {
-                foreach (string filesystemFile in FilesOnSystem)
+                foreach (var fileOnSystem in FilesOnSystem)
                 {
 
                     bool filesystemFileSuccessfullyMatched = false;
                     //Console.WriteLine($"DEBUG: Filename Analysis result:\nFile: {filesystemFile}\nCropped: {cleanedFilename}\nSeason: {fileSeason} - Ep: {fileEpisode}\n");
-                    string extension = Path.GetExtension(filesystemFile);
-                    foreach (FileNameRepresentation deducedNewName in FileNamePool)
+                    foreach (FileNameRepresentation fileInPool in FileNamePool)
                     {
-                        if (deducedNewName.Season == fileSeason && deducedNewName.Episode == fileEpisode)
+                        if (fileInPool.Season == fileOnSystem.Season && fileInPool.Episode == fileOnSystem.Episode)
                         {
-                            string targetName = Path.Combine(UserVariables.folder, deducedNewName.FullName + extension);
-                            if (result.Values.Contains(targetName))
+                            string targetPath = Path.Combine(fileOnSystem.JustFolder, fileInPool.FullName + fileOnSystem.Extension);
+                            if (result.Values.Contains(targetPath))
                             {
-                                Console.WriteLine("**ERROR**: Duplicate target file name: " + Path.GetFileName(filesystemFile) + " --> " + targetName);
+                                Console.WriteLine("**ERROR**: Duplicate target file name: " + fileOnSystem.JustFileName + " --> " + targetPath);
                             }
                             else
                             {
-                                result.Add(filesystemFile, targetName);
+                                result.Add(fileOnSystem.PathToFile, targetPath);
                                 filesystemFileSuccessfullyMatched = true;
                             }
                             break;
@@ -50,12 +50,9 @@ namespace SeriesRenamer.Renaming
                     }
                     if (!filesystemFileSuccessfullyMatched)
                     {
-                        Console.WriteLine("WARN: No Mapping found for file: " + Path.GetFileName(filesystemFile));
+                        Console.WriteLine("WARN: No Mapping found for file: " + fileOnSystem.JustFileName);
                     }
-
                 }
-
-
             }
             catch (IOException e)
             {

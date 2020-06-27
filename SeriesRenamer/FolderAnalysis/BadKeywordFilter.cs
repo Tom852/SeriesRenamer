@@ -18,7 +18,7 @@ namespace SeriesRenamer.FolderAnalysis
 
             Assembly asm = Assembly.GetExecutingAssembly();
             string path = System.IO.Path.GetDirectoryName(asm.Location);
-            string p = Path.Combine(path, "keywords.txt");
+            string p = Path.Combine(path, "badWords.txt");
 
             string[] words = File.ReadAllLines(p);
 
@@ -33,7 +33,6 @@ namespace SeriesRenamer.FolderAnalysis
             foreach (var badThing in WordList)
             {
                 result = result.Replace(badThing, "");
-
             }
 
             return result;

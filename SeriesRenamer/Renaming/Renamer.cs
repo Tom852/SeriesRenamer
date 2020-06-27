@@ -13,13 +13,12 @@ namespace SeriesRenamer.Renaming
         public void Rename()
         {
 
-            Console.WriteLine("\n\n**INFO**: Matching Files on System");
-            Console.WriteLine("==================================");
+
 
             if (Renaming != null && Renaming.Count > 0)
             {
 
-                Console.WriteLine("\n\n**INFO**: Mapping Found!");
+                Console.WriteLine("\n\n**INFO**: Mapping Available!");
                 Console.WriteLine("============================");
                 DisplayRenaming();
 
@@ -38,7 +37,7 @@ namespace SeriesRenamer.Renaming
             }
             else
             {
-                Console.WriteLine("No Mapping Rules found. Try better next time...");
+                Console.WriteLine("No Mapping Rules found. Something went wrong...");
             }
 
 
@@ -51,10 +50,9 @@ namespace SeriesRenamer.Renaming
         {
             var maxlength = Renaming.Keys.Max(e => e.Length);
 
-            char changeIndicator = '-';
             foreach (var pair in Renaming)
             {
-                changeIndicator = pair.Key == pair.Value ? '-' : '*';
+                var changeIndicator = pair.Key == pair.Value ? '-' : '*';
                 Console.WriteLine(pair.Key.PadRight(maxlength) + " -" + changeIndicator + "->  " + pair.Value);
             }
 
@@ -64,9 +62,9 @@ namespace SeriesRenamer.Renaming
 
         private void PerformRenaming()
         {
-            foreach (var pair in Renaming)
+            foreach (var (key, value) in Renaming)
             {
-                System.IO.File.Move(pair.Key, pair.Value);
+                System.IO.File.Move(key, value);
             }
         }
 

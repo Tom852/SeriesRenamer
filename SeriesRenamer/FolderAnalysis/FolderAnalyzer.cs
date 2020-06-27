@@ -28,7 +28,6 @@ namespace SeriesRenamer.FolderAnalysis
 
                 string cleanedFilename = cleanedFilePath.Split('\\').ToList().Last();
 
-                bool filesystemFileSuccessfullyMatched = false;
                 Regex r = new Regex(@"([0-3]?\d)[x\-_eE]?(\d{2})"); //goal: 112 s1e12 S01E12 1x12 1-12 etc; max 39 seasons to be more robust against stuff like "720p"
                 Match m = r.Match(cleanedFilename);
 
