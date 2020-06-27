@@ -1,40 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using SeriesRenamer.UserVariablesStuff;
 
 namespace SeriesRenamer
 {
     public class WikiAnalyzer
     {
-        public LinkedList<FileNameRepresentation> DeducedFileNames { get; set; }
+        public LinkedList<FileNameRepresentation> DeducedFileNames { get; set; } = new LinkedList<FileNameRepresentation>();
+        public string WikiURL { get; }
+        public string SeriesName { get; }
+        public string Lang { get; }
+
+        private int tableIndexOfSeriesName = -1;
+        private int tableIndexOfEpisodeNr = -1;
+
+        public WikiAnalyzer(UserVariables uv)
+        {
+            WikiURL = uv.WikiURL;
+            SeriesName = uv.SeriesName;
+            Lang = uv.Lang;
+        }
 
         public LinkedList<FileNameRepresentation> Analyze()
         {
             Console.WriteLine("\n\n**INFO**: Starting Wiki Analysis");
             Console.WriteLine("================================");
-            DeducedFileNames = AnalyzeWiki();
-            Console.WriteLine($"\n\n**SUCCESS**: {DeducedFileNames.Count} potential file names registered."); //Todo kann auch 0 sein....
+            AnalyzeWiki();
+            if (DeducedFileNames.Any())
+            {
+                Console.WriteLine($"\n\n**SUCCESS**: {DeducedFileNames.Count} potential file names registered."); //Todo kann auch 0 sein....
+            }
+            else
+            {
+                Console.WriteLine("\n\n**ERROR**: No potential file names were found. Was the URL wrong?");
+            }
             return DeducedFileNames;
         }
 
 
-        private static LinkedList<FileNameRepresentation> AnalyzeWiki()
+        private void AnalyzeWiki()
         {
 
             HtmlWeb web = new HtmlWeb();
             HtmlDocument wikiDocument;
-            wikiDocument = web.Load(new Uri(UserVariables.wikiURL));
+            wikiDocument = web.Load(new Uri(WikiURL));
             wikiDocument.OptionUseIdAttribute = true;
 
 
             var h2Nodes = wikiDocument.DocumentNode.SelectNodes("//h2");
-            LinkedList<FileNameRepresentation> result = AnalyzeByHeadings(h2Nodes, UserVariables.seriesName);
+            AnalyzeByHeadings(h2Nodes);
 
-            if (!result.IsEmpty())
+            if (!DeducedFileNames.IsEmpty())
             {
-                return result;
+                return;
             }
 
             Console.WriteLine("\n**WARN**: Analysis for dedicated episode page failed... trying attempt for a non dedicated episode list page...");
@@ -50,7 +74,7 @@ namespace SeriesRenamer
                 var h3Nodes = h2Head.SelectNodes("./following-sibling::h3");
                 if (!(h3Nodes is null))
                 {
-                    result = AnalyzeByHeadings(h3Nodes, UserVariables.seriesName);
+                    AnalyzeByHeadings(h3Nodes);
                 }
                 else
                 {
@@ -63,29 +87,27 @@ namespace SeriesRenamer
                 Console.WriteLine("\n**WARN**: No h2 named 'Episoden(liste)' found. Skipping attempt...");
             }
 
-            if (!result.IsEmpty())
+            if (!DeducedFileNames.IsEmpty())
             {
-                return result;
+                return;
             }
 
             Console.WriteLine("\n**WARN**: H3-Analysis attempt failed too, trying a generic table scan");
-            result = AnalyzeByTableaggressive(wikiDocument, false);
+            AnalyzeByTableaggressive(wikiDocument, false);
 
-            if (!result.IsEmpty())
+            if (!DeducedFileNames.IsEmpty())
             {
-                return result;
+                return;
             }
 
             Console.WriteLine("\n\n**WARN**: Generic Table Scan failed as well, maybe you can help me here...");
-            result = AnalyzeByTableaggressive(wikiDocument, true);
-
-            return result;
+            AnalyzeByTableaggressive(wikiDocument, true);
 
         }
-        private static LinkedList<FileNameRepresentation> AnalyzeByHeadings(HtmlNodeCollection headings, string seriesName)
+        private void AnalyzeByHeadings(HtmlNodeCollection headings)
         {
-            LinkedList<FileNameRepresentation> result = new LinkedList<FileNameRepresentation>();
-            int indexOfNameColumn = -1, indexOfEpColumn = -1;
+            tableIndexOfSeriesName = -1;
+            tableIndexOfEpisodeNr = -1;
 
             foreach (var header in headings)
             {
@@ -102,7 +124,7 @@ namespace SeriesRenamer
                 {
                     try
                     {
-                        AnalyzeHeadingRowForIndexes(tableNode, ref indexOfNameColumn, ref indexOfEpColumn);
+                        AnalyzeHeadingRowForTableLayout(tableNode);
                     }
                     catch
                     {
@@ -110,8 +132,7 @@ namespace SeriesRenamer
                         Console.WriteLine("INFO: Expected something like nr/nummer/st. and deutsch/titel");
                         Console.WriteLine("INFO: This may happen if the column is called 'Originaltitel'");
                         Console.WriteLine("INFO: You may try again but select English as language");
-                        result.Clear();
-                        return result;
+                        DeducedFileNames.Clear();
                     }
                 }
 
@@ -121,36 +142,33 @@ namespace SeriesRenamer
                 Console.WriteLine("DEBUG: Analyzing Table...");
                 foreach (var row in rows)
                 {
-                    FileNameRepresentation f = AnalyzeRow(row, season, indexOfNameColumn, indexOfEpColumn);
+                    FileNameRepresentation f = AnalyzeRow(row, season);
                     if (f is null)
                     {
                         continue;
                     }
-                    result.AddLast(f);
+                    DeducedFileNames.AddLast(f);
                 }
             }
-
-            return result;
-
         }
 
-        private static LinkedList<FileNameRepresentation> AnalyzeByTableaggressive(HtmlDocument wikiDocument, bool SetManualIndexes)
+        private void AnalyzeByTableaggressive(HtmlDocument wikiDocument, bool SetManualIndexes)
         {
             var tableNodes = wikiDocument.DocumentNode.SelectNodes("//table");
-            LinkedList<FileNameRepresentation> result = new LinkedList<FileNameRepresentation>();
 
-            int season = 1, indexOfNameColumn = -1, indexOfEpColumn = -1;
-
+            int season = 1;
+            tableIndexOfEpisodeNr = -1;
+            tableIndexOfSeriesName = -1;
 
             if (SetManualIndexes)
             {
                 Console.WriteLine("Locate Table with Episode Numbers and Episode Titles.\nEnter Column index for *season number* (start to count at 1)");
                 int.TryParse(Console.ReadLine(), out int a);
-                indexOfEpColumn = a;
+                tableIndexOfEpisodeNr = a;
 
                 Console.WriteLine("Enter Column index for episode *name* (start with 1)");
                 int.TryParse(Console.ReadLine(), out int b);
-                indexOfNameColumn = b;
+                tableIndexOfSeriesName = b;
             }
 
             foreach (var tbl in tableNodes)
@@ -160,7 +178,7 @@ namespace SeriesRenamer
                 {
                     try
                     {
-                        AnalyzeHeadingRowForIndexes(tbl, ref indexOfNameColumn, ref indexOfEpColumn);
+                        AnalyzeHeadingRowForTableLayout(tbl);
                     }
                     catch (InvalidOperationException)
                     {
@@ -169,7 +187,7 @@ namespace SeriesRenamer
                     }
                 }
 
-                if (indexOfNameColumn <= 0 || indexOfEpColumn <= 0)
+                if (tableIndexOfSeriesName <= 0 || tableIndexOfEpisodeNr <= 0)
                 {
                     Console.WriteLine("DEBUG: No suitable heading detected... skipping table");
                     continue;
@@ -180,12 +198,12 @@ namespace SeriesRenamer
 
                 foreach (var row in rows)
                 {
-                    FileNameRepresentation f = AnalyzeRow(row, season, indexOfNameColumn, indexOfEpColumn);
+                    FileNameRepresentation f = AnalyzeRow(row, season);
                     if (f is null)
                     {
                         continue;
                     }
-                    result.AddLast(f);
+                    DeducedFileNames.AddLast(f);
                     newEntriesWereAdded = true;
                 }
                 if (newEntriesWereAdded)
@@ -201,14 +219,13 @@ namespace SeriesRenamer
                 }
 
             }
-            return result;
         }
 
-        private static FileNameRepresentation AnalyzeRow(HtmlNode row, int season, int indexOfNameColumn, int indexOfEpColumn)
+        private FileNameRepresentation AnalyzeRow(HtmlNode row, int season)
         {
 
-            HtmlNode cellWithNr = row.SelectSingleNode($"./td[{indexOfEpColumn}]");
-            HtmlNode cellWithName = row.SelectSingleNode($"./td[{indexOfNameColumn}]");
+            HtmlNode cellWithNr = row.SelectSingleNode($"./td[{tableIndexOfEpisodeNr}]");
+            HtmlNode cellWithName = row.SelectSingleNode($"./td[{tableIndexOfSeriesName}]");
 
             if (cellWithNr is null || cellWithName is null)
             {
@@ -243,14 +260,14 @@ namespace SeriesRenamer
             }
 
 
-            FileNameRepresentation result = new FileNameRepresentation(UserVariables.seriesName, season, episode, episodeName);
+            FileNameRepresentation result = new FileNameRepresentation(SeriesName, season, episode, episodeName);
             Console.WriteLine("SUCCESS: Added episode: " + result.FullName);
             return result;
         }
 
-        private static void AnalyzeHeadingRowForIndexes(HtmlNode tableNode, ref int indexOfNameColumn, ref int indexOfEpColumn)
+        private void AnalyzeHeadingRowForTableLayout(HtmlNode tableNode)
         {
-            Console.WriteLine("\nDEBUG: Analyizing Table Headers for Indexes...");
+            Console.WriteLine("\nDEBUG: Analyizing Table Headers for Layout...");
             int index = 1;
             var tableHeaders = tableNode.SelectNodes(".//tr[1]/th");
             if (tableHeaders is null)
@@ -263,21 +280,21 @@ namespace SeriesRenamer
                 string cellText = col.InnerText.Trim();
                 Console.WriteLine($"DEBUG: Currently Checking: '{cellText}'");
 
-                if (cellText.ToLower().Contains(UserVariables.lang) && cellText.ToLower().Contains("titel"))
+                if (cellText.ToLower().Contains(Lang) && cellText.ToLower().Contains("titel"))
                 {
                     Console.WriteLine("SUCCESS: Found column index for the Name: " + index);
-                    indexOfNameColumn = index;
+                    tableIndexOfSeriesName = index;
                 }
                 if ((cellText.ToLower().Contains("nr.") || cellText.ToLower().Contains("nummer")) && !cellText.ToLower().Contains("ges."))
                 {
                     Console.WriteLine("SUCCESS: Found column index for episode number: " + index);
-                    indexOfEpColumn = index;
+                    tableIndexOfEpisodeNr = index;
                 }
 
                 index++;
             }
 
-            if (indexOfEpColumn == -1 || indexOfNameColumn == -1)
+            if (tableIndexOfEpisodeNr == -1 || tableIndexOfSeriesName == -1)
             {
                 throw new InvalidOperationException("Could not parse proper columns");
             }

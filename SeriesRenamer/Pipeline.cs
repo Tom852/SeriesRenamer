@@ -15,7 +15,7 @@ namespace SeriesRenamer
             UserVariables validatedVars = new UserVariablesValidator(userVars).Validate();
             validatedVars.Print();
 
-            var fileNamePool = new WikiAnalyzer().Analyze();
+            var fileNamePool = new WikiAnalyzer(validatedVars).Analyze();
             var filesOnSystem = Directory.GetFiles(UserVariables.folder);
 
             Dictionary<string, string> renaming = new FileMatcher(fileNamePool, filesOnSystem).Match();
