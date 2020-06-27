@@ -9,7 +9,7 @@ This software was made for German use only. It relies on the German Wikipedia, u
 
 ## About
 *SeriesRenamer* is a console application which renames your downloaded series consistently.
-Season and episode of your file is exatracted using the filename, and then, the corresponsing series title is downloaded from Wikipedia.
+Season and episode of your file is exatracted using the filename, and then, the corresponding episode title is downloaded from Wikipedia.
 Finally, a given rename scheme is applied.
 
 ## Download
