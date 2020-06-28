@@ -133,19 +133,22 @@ namespace SeriesRenamer.WikiAnalysis
                     }
                 }
 
-
-                var rows = tableNode.SelectNodes($".//tr[position()>1]");
-
-                Console.WriteLine("DEBUG: Analyzing Table...");
-                foreach (var row in rows)
+                if (tableNode != null)
                 {
-                    FileNameRepresentation f = AnalyzeRow(row, season);
-                    if (f is null)
+                    var rows = tableNode.SelectNodes($".//tr[position()>1]");
+
+                    Console.WriteLine("DEBUG: Analyzing Table...");
+                    foreach (var row in rows)
                     {
-                        continue;
+                        FileNameRepresentation f = AnalyzeRow(row, season);
+                        if (f is null)
+                        {
+                            continue;
+                        }
+                        DeducedFileNames.AddLast(f);
                     }
-                    DeducedFileNames.AddLast(f);
                 }
+
             }
         }
 
