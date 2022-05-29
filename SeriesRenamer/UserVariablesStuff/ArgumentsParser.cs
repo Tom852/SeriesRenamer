@@ -10,7 +10,7 @@ namespace SeriesRenamer.UserVariablesStuff
 
         public UserVariables ParseArguments()
         {
-            if (Args.Length > 0 && Args[0] == "-h")
+            if (Args.Length > 0 && (Args[0] is "-h" or "/h" or "/?" or "/help" or "-help" or "-?" or "?"))
             {
                 Console.WriteLine(@"USAGE:
 * -f folder on filesystem

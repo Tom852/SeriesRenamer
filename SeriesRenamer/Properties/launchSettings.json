@@ -2,7 +2,7 @@
   "profiles": {
     "SeriesRenamer": {
       "commandName": "Project",
-      "commandLineArgs": "-f \"F:\\New Files\\shadsghrads\" -u \"https://de.wikipedia.org/wiki/Shameless_(US-amerikanische_Fernsehserie)/Episodenliste\" -n \"Shameless\""
+      "commandLineArgs": "-f \"F:\\test\" -u \"https://de.wikipedia.org/wiki/Die_Simpsons/Episodenliste\" -n \"Die Simpsons\""
     }
   }
 }

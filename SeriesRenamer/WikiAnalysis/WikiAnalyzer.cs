@@ -243,7 +243,7 @@ namespace SeriesRenamer.WikiAnalysis
 
             }
 
-            string episodeName = cellWithName.InnerText.Trim();
+            string episodeName = cellWithName.FirstChild.InnerText.Trim();
             int.TryParse(cellWithNr.InnerText, out int episode);
 
             if (episodeName.Length < 2)
