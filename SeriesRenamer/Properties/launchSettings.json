@@ -2,7 +2,7 @@
   "profiles": {
     "SeriesRenamer": {
       "commandName": "Project",
-      "commandLineArgs": "-f \"F:\\test\" -u \"https://de.wikipedia.org/wiki/Die_Simpsons/Episodenliste\" -n \"Die Simpsons\""
+      "commandLineArgs": "-f \"N:\\New Files\\_series\" -n \"Brooklyn 99\" -u https://de.wikipedia.org/wiki/Brooklyn_Nine-Nine/Episodenliste"
     }
   }
 }

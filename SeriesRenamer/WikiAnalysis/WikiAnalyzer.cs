@@ -243,7 +243,10 @@ namespace SeriesRenamer.WikiAnalysis
 
             }
 
-            string episodeName = cellWithName.FirstChild.InnerText.Trim();
+            // select first text node
+            // works if multiple children text nodes are available (like simpsons-> amazon different names) and also if they are nested in a a (link)
+            string episodeName = cellWithName.SelectSingleNode(".//text()").InnerText.Trim();
+
             int.TryParse(cellWithNr.InnerText, out int episode);
 
             if (episodeName.Length < 2)
